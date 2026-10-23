@@ -181,4 +181,45 @@ public final class HashRing {
             rwl.readLock().unlock();
         }
     }
+
+    public record VNode(long token, String nodeId, double angleNormalized) {}
+
+    /**
+     * Returns a snapshot of all virtual node tokens and their owners on the ring.
+     */
+    public List<VNode> getAllVNodes() {
+        rwl.readLock().lock();
+        try {
+            List<VNode> list = new ArrayList<>(ring.size());
+            for (Map.Entry<Long, String> entry : ring.entrySet()) {
+                long token = entry.getKey();
+                list.add(new VNode(token, entry.getValue(), hashToNormalized(token)));
+            }
+            return list;
+        } finally {
+            rwl.readLock().unlock();
+        }
+    }
+
+    /**
+     * Normalizes any 64-bit hash token to a floating-point fraction in [0.0, 1.0).
+     *
+     * <p><b>Mathematical Explanation (Interview Discussion Point):</b>
+     * <ol>
+     *   <li>Java's {@code long} is a signed two's-complement 64-bit integer spanning
+     *       [-2^63, 2^63 - 1].</li>
+     *   <li>The unsigned right shift {@code hash >>> 11} discards the bottom 11 bits and
+     *       clears the sign bit, leaving the top 53 most-significant bits.</li>
+     *   <li>The IEEE 754 standard for 64-bit {@code double} contains exactly 53 bits of
+     *       precision in its significand (mantissa).</li>
+     *   <li>Dividing by {@code (1L << 53)} (9,007,199,254,740,992.0) produces an exact,
+     *       uniformly distributed value in the interval [0.0, 1.0) with zero rounding distortion.</li>
+     *   <li>Multiplying this normalized fraction by {@code 360.0} gives the polar angle in degrees,
+     *       or by {@code 2 * Math.PI} gives the radians for Cartesian circle coordinates:
+     *       {@code x = cx + r * cos(theta)}, {@code y = cy + r * sin(theta)}.</li>
+     * </ol>
+     */
+    public static double hashToNormalized(long hash) {
+        return ((double) (hash >>> 11)) / (double) (1L << 53);
+    }
 }

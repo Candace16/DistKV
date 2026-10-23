@@ -156,6 +156,32 @@ Spins up:
 
 ---
 
+## 🌐 Web Dashboard (Phase 7)
+
+DistKV includes an embedded single-page monitoring dashboard built into the Java server (`com.sun.net.httpserver`, zero npm, zero external dependencies). Static assets live in `src/main/resources/web/`.
+
+### Open the Dashboard
+Start the server and open:
+```text
+http://localhost:8080
+```
+
+### Dashboard Features
+- **Hero Hash Ring Visualizer (SVG)**: Three node perimeter arcs, virtual-node tick marks, and up to 300 live key dots mapped directly to their polar coordinates.
+- **Node Failover Animation**: When a node is marked `DOWN`, its arc turns hatched grey, and its key dots animate clockwise to their replica nodes along with a real-time failover advisory.
+- **Live Telemetry**: Real-time throughput (`ops/sec`), latency percentiles (`p50`, `p95`, `p99`), total key counts, and a 60-second throughput history sparkline.
+- **Embedded Web Console**: Issue `SET`, `GET`, `DEL`, `TTL`, and `PING` directly from the browser; new keys animate and settle onto the ring at their exact 64-bit hash positions.
+
+### Hash-to-Angle Mathematical Mapping
+To map any 64-bit MD5 hash token to a continuous circle $[0^\circ, 360^\circ)$ without precision distortion:
+1. `long hash` is a signed 64-bit integer $[-2^{63}, 2^{63} - 1]$.
+2. The logical right shift `hash >>> 11` extracts the top 53 bits (matching IEEE 754 double significand precision).
+3. Dividing by `(1L << 53)` yields a uniform fraction $\theta \in [0.0, 1.0)$.
+4. Multiplying by $2\pi$ (and rotating by $-\pi/2$) produces exact Cartesian circle coordinates:
+   $$x = cx + r \cdot \cos(\theta \cdot 2\pi - \pi/2), \quad y = cy + r \cdot \sin(\theta \cdot 2\pi - \pi/2)$$
+
+---
+
 ## ⚖️ Design Decisions and Limitations
 
 In distributed systems, every architecture is defined by its trade-offs:

@@ -1,0 +1,427 @@
+:root {
+    --ground: #E8EDF1;
+    --ground-surface: #FFFFFF;
+    --ground-muted: #D3DDE4;
+    --ink: #15222E;
+    --ink-muted: #536471;
+    --ink-faint: #8D9DAA;
+
+    /* Functional Node Identity Colors */
+    --node-cobalt: #2F54D6;
+    --node-amber: #D99A1E;
+    --node-teal: #178A7A;
+    --alert-down: #C23B2E;
+
+    --font-heading: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', Consolas, monospace;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    padding: 24px 32px;
+    min-height: 100vh;
+}
+
+/* Ensure tabular numerals on all metrics */
+.metric-value,
+.center-value,
+.sub-metric strong,
+.node-count,
+.cmd-output {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--ground-muted);
+    margin-bottom: 32px;
+}
+
+.brand {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+}
+
+.title {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--ink-muted);
+}
+
+.cluster-summary {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+}
+
+/* Main Layout */
+.main-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(300px, 1fr);
+    gap: 48px;
+    align-items: start;
+}
+
+/* Left: Ring Visualizer & Command Box */
+.visual-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.ring-container {
+    background: var(--ground-surface);
+    border: 1px solid var(--ground-muted);
+    border-radius: 4px;
+    padding: 20px;
+    aspect-ratio: 1 / 1;
+    max-height: 640px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.center-label {
+    font-family: var(--font-body);
+    font-size: 13px;
+    fill: var(--ink-muted);
+}
+
+.center-value {
+    font-family: var(--font-heading);
+    font-size: 38px;
+    font-weight: 700;
+    fill: var(--ink);
+}
+
+/* Failover Notice */
+.failover-notice {
+    background: #FAF0EE;
+    border: 1px solid var(--alert-down);
+    border-left-width: 4px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--ink);
+    border-radius: 2px;
+}
+
+/* Command Box */
+.command-pane {
+    background: var(--ground-surface);
+    border: 1px solid var(--ground-muted);
+    border-radius: 4px;
+    padding: 20px;
+}
+
+.cmd-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cmd-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-muted);
+}
+
+.cmd-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.cmd-input {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    padding: 10px 14px;
+    background: #F7F9FA;
+    border: 1px solid var(--ground-muted);
+    border-radius: 3px;
+    color: var(--ink);
+}
+
+.cmd-input:focus {
+    outline: 2px solid var(--ink);
+    outline-offset: 1px;
+    background: #FFFFFF;
+}
+
+.cmd-button {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    background: var(--ink);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 3px;
+    padding: 0 20px;
+    cursor: pointer;
+}
+
+.cmd-button:focus {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+}
+
+.cmd-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cmd-output {
+    margin-top: 14px;
+    padding: 12px 14px;
+    background: #F7F9FA;
+    border: 1px solid var(--ground-muted);
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    word-break: break-all;
+}
+
+.cmd-placeholder {
+    color: var(--ink-faint);
+}
+
+/* Right: Telemetry & Metrics Pane */
+.metrics-pane {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    padding-top: 8px;
+}
+
+.metric-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.metric-label {
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-weight: 500;
+}
+
+.metric-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.metric-value {
+    font-family: var(--font-heading);
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+}
+
+.metric-unit {
+    font-size: 14px;
+    color: var(--ink-muted);
+    font-weight: 500;
+}
+
+.sub-metric {
+    display: flex;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 6px;
+}
+
+.sub-metric strong {
+    color: var(--ink);
+}
+
+/* Telemetry Sections */
+.telemetry-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.section-heading {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-muted);
+}
+
+/* Node List */
+.node-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.node-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--ground-surface);
+    border: 1px solid var(--ground-muted);
+    border-radius: 3px;
+}
+
+.node-ident {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.node-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.node-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.node-status-text {
+    font-size: 13px;
+    color: var(--ink-muted);
+}
+
+.node-status-text.down {
+    color: var(--alert-down);
+    font-weight: 600;
+}
+
+.node-count {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+}
+
+/* Throughput History Sparkline */
+.sparkline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.sub-label {
+    font-size: 12px;
+    color: var(--ink-faint);
+}
+
+.sparkline-wrapper {
+    background: var(--ground-surface);
+    border: 1px solid var(--ground-muted);
+    border-radius: 3px;
+    padding: 12px 14px;
+    height: 80px;
+}
+
+#sparkline-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+/* SVG Ring Visual Elements */
+.ring-arc {
+    fill: none;
+    stroke-width: 12;
+    stroke-linecap: butt;
+}
+
+.vnode-tick {
+    stroke-width: 1.5;
+    opacity: 0.75;
+}
+
+.replica-link {
+    stroke: var(--ground-muted);
+    stroke-width: 1;
+    stroke-dasharray: 2 3;
+    opacity: 0.6;
+}
+
+.key-dot {
+    cursor: pointer;
+    transition: r 0.2s ease;
+}
+
+.key-dot:hover {
+    r: 6;
+}
+
+/* Single page-load animation sequence */
+@keyframes ringIntro {
+    from { stroke-dashoffset: 1633; }
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes settlePulse {
+    0% { r: 12; opacity: 0.2; }
+    50% { r: 7; opacity: 0.9; }
+    100% { r: 4.5; opacity: 1; }
+}
+
+.ring-animated {
+    stroke-dasharray: 1633;
+    animation: ringIntro 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dot-settling {
+    animation: settlePulse 0.45s ease-out forwards;
+}
+
+/* Respect prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    *, ::before, ::after {
+        animation-duration: 0.001s !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001s !important;
+    }
+}
+
+/* Responsive Stacking */
+@media (max-width: 960px) {
+    .main-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    body {
+        padding: 16px;
+    }
+}

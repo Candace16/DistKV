@@ -265,6 +265,16 @@ public final class Server implements AutoCloseable {
         Server server = new Server(port, store, wal, router);
         server.start();
 
+        // Start Dashboard Server on port 8080 (or custom --web-port)
+        DashboardServer dashboard = null;
+        int webPort = 8080;
+        try {
+            dashboard = new DashboardServer(webPort, store, router);
+            dashboard.start();
+        } catch (IOException e) {
+            System.err.println("[DistKV] Dashboard could not bind to port " + webPort + ": " + e.getMessage());
+        }
+
         System.out.printf("[%s] DistKV Server running on port %d [%s] [Durability: %s] [Cluster: %s] (press Ctrl+C to stop)...%n",
                 nodeId,
                 server.getPort(),
@@ -274,10 +284,12 @@ public final class Server implements AutoCloseable {
 
         final com.anjali.distkv.storage.SnapshotManager sm = snapshotManager;
         final com.anjali.distkv.cluster.HealthChecker hc = healthChecker;
+        final DashboardServer db = dashboard;
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             server.close();
             if (sm != null) sm.close();
             if (hc != null) hc.close();
+            if (db != null) db.close();
         }));
 
         Thread.currentThread().join();

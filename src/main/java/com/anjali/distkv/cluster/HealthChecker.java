@@ -28,6 +28,7 @@ public final class HealthChecker implements Closeable {
         final int port;
         volatile NodeStatus status = NodeStatus.UP;
         int consecutiveFailures = 0;
+        long downSinceMillis = 0L;
 
         PeerTracker(String host, int port) {
             this.host = host;
@@ -79,6 +80,7 @@ public final class HealthChecker implements Closeable {
             if (alive) {
                 if (tracker.status == NodeStatus.DOWN) {
                     tracker.status = NodeStatus.UP;
+                    tracker.downSinceMillis = 0L;
                     System.out.printf("[%s] %s marked UP after successful ping%n", localNodeId, peerId);
                 }
                 tracker.consecutiveFailures = 0;
@@ -86,6 +88,7 @@ public final class HealthChecker implements Closeable {
                 tracker.consecutiveFailures++;
                 if (tracker.consecutiveFailures >= 3 && tracker.status == NodeStatus.UP) {
                     tracker.status = NodeStatus.DOWN;
+                    tracker.downSinceMillis = System.currentTimeMillis();
                     System.out.printf("[%s] %s marked DOWN after 3 missed pings%n", localNodeId, peerId);
                 }
             }
@@ -98,6 +101,14 @@ public final class HealthChecker implements Closeable {
         }
         PeerTracker tracker = peers.get(peerId);
         return tracker != null && tracker.status == NodeStatus.UP;
+    }
+
+    public long getDownDurationSeconds(String peerId) {
+        PeerTracker tracker = peers.get(peerId);
+        if (tracker == null || tracker.status == NodeStatus.UP || tracker.downSinceMillis == 0L) {
+            return 0L;
+        }
+        return Math.max(1L, (System.currentTimeMillis() - tracker.downSinceMillis) / 1000L);
     }
 
     /**

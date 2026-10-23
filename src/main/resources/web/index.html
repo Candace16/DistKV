@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DistKV Cluster Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <header class="header">
+        <div class="brand">
+            <h1 class="title">DistKV</h1>
+            <span class="subtitle">Distributed hash ring and cluster status</span>
+        </div>
+        <div class="cluster-summary" id="cluster-summary" aria-live="polite">
+            Evaluating cluster state...
+        </div>
+    </header>
+
+    <main class="main-layout">
+        <section class="visual-pane" aria-label="Consistent hash ring visualizer">
+            <div class="ring-container">
+                <svg id="hash-ring-svg" viewBox="0 0 700 700" width="100%" height="100%" aria-label="Consistent hash ring with virtual nodes and key assignments">
+                    <defs>
+                        <!-- Pattern for downed nodes -->
+                        <pattern id="downed-hatch" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                            <line x1="0" y1="0" x2="0" y2="8" stroke="#8D9DAA" stroke-width="2.5" />
+                        </pattern>
+                    </defs>
+                    <!-- Background Ring Circle -->
+                    <circle id="base-ring" cx="350" cy="350" r="260" fill="none" stroke="#D3DDE4" stroke-width="6" />
+                    
+                    <!-- Dynamic Node Arcs -->
+                    <g id="node-arcs" aria-hidden="true"></g>
+                    
+                    <!-- Virtual Node Ticks -->
+                    <g id="vnode-ticks" aria-hidden="true"></g>
+                    
+                    <!-- Replica Links -->
+                    <g id="replica-lines" aria-hidden="true"></g>
+                    
+                    <!-- Key Dots -->
+                    <g id="key-dots" aria-label="Keys distributed on the ring"></g>
+                    
+                    <!-- Ring Center Info -->
+                    <g class="ring-center" transform="translate(350, 350)" text-anchor="middle">
+                        <text y="-8" class="center-label">Active keys</text>
+                        <text y="32" class="center-value" id="center-key-count">0</text>
+                    </g>
+                </svg>
+            </div>
+
+            <div id="failover-notice" class="failover-notice" aria-live="assertive" hidden></div>
+
+            <div class="command-pane">
+                <form id="cmd-form" class="cmd-form">
+                    <label for="cmd-input" class="cmd-label">Execute command</label>
+                    <div class="cmd-input-group">
+                        <input type="text" id="cmd-input" class="cmd-input" placeholder="SET user:42 Anjali EX 60" spellcheck="false" autocomplete="off" required>
+                        <button type="submit" id="cmd-submit" class="cmd-button">Run</button>
+                    </div>
+                </form>
+                <div class="cmd-output" id="cmd-output" aria-live="polite">
+                    <span class="cmd-placeholder">Replies from cluster router will appear here.</span>
+                </div>
+            </div>
+        </section>
+
+        <aside class="metrics-pane" aria-label="Live cluster telemetry">
+            <div class="metric-block">
+                <span class="metric-label">Throughput</span>
+                <div class="metric-row">
+                    <span class="metric-value" id="metric-ops">0</span>
+                    <span class="metric-unit">ops/sec</span>
+                </div>
+            </div>
+
+            <div class="metric-block">
+                <span class="metric-label">Tail latency</span>
+                <div class="metric-row">
+                    <span class="metric-value" id="metric-p99">0.00</span>
+                    <span class="metric-unit">µs p99</span>
+                </div>
+                <div class="sub-metric">
+                    <span>p50: <strong id="metric-p50">0.00</strong> µs</span>
+                    <span>p95: <strong id="metric-p95">0.00</strong> µs</span>
+                </div>
+            </div>
+
+            <div class="metric-block">
+                <span class="metric-label">Total keys</span>
+                <div class="metric-row">
+                    <span class="metric-value" id="metric-keys">0</span>
+                    <span class="metric-unit">in memory</span>
+                </div>
+            </div>
+
+            <div class="telemetry-section">
+                <span class="section-heading">Nodes</span>
+                <div id="node-list" class="node-list"></div>
+            </div>
+
+            <div class="telemetry-section">
+                <div class="sparkline-header">
+                    <span class="section-heading">Throughput history</span>
+                    <span class="sub-label">Last 60 seconds</span>
+                </div>
+                <div class="sparkline-wrapper">
+                    <svg id="sparkline-svg" viewBox="0 0 300 64" preserveAspectRatio="none" aria-label="Throughput trend over the last 60 seconds">
+                        <path id="sparkline-path" d="" fill="none" stroke="#15222E" stroke-width="1.75" />
+                    </svg>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script src="index.js"></script>
+</body>
+</html>

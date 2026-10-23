@@ -7,6 +7,7 @@ import com.anjali.distkv.store.SimpleStore;
 import com.anjali.distkv.store.Store;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.OptionalLong;
@@ -250,5 +251,25 @@ public final class ClusterRouter {
 
     public HashRing getHashRing() {
         return hashRing;
+    }
+
+    public String getLocalNodeId() {
+        return localNodeId;
+    }
+
+    public Store getLocalStore() {
+        return localStore;
+    }
+
+    public HealthChecker getHealthChecker() {
+        return healthChecker;
+    }
+
+    public Map<String, NodeAddress> getPeerAddresses() {
+        return Collections.unmodifiableMap(peerAddresses);
+    }
+
+    public ReplicationClient getReplicationClient() {
+        return replicationClient;
     }
 }
