@@ -204,7 +204,7 @@ public final class HashRing {
     /**
      * Normalizes any 64-bit hash token to a floating-point fraction in [0.0, 1.0).
      *
-     * <p><b>Mathematical Explanation (Interview Discussion Point):</b>
+     * <p><b>Mathematical Explanation:</b>
      * <ol>
      *   <li>Java's {@code long} is a signed two's-complement 64-bit integer spanning
      *       [-2^63, 2^63 - 1].</li>

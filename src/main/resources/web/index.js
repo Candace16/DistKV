@@ -1,7 +1,7 @@
 /**
- * DistKV Cluster Visual Dashboard (Phase 7)
+ * DistKV Cluster Visual Dashboard
  *
- * <p>Mathematical Explanation of Hash-to-Angle Mapping (for Interviews):
+ * <p>Mathematical Explanation of Hash-to-Angle Mapping:
  * <ul>
  *   <li>The 64-bit MD5 hash token is mapped to a normalized floating-point number in [0.0, 1.0).</li>
  *   <li>We convert this fraction to polar coordinates:

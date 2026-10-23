@@ -8,7 +8,7 @@
 
 **DistKV** is a distributed, in-memory, durable key-value store engineered from scratch in **Java 17** without high-level frameworks. It combines the low-latency caching mechanics of **Redis** with the decentralized partitioning and replication topology of **Amazon Dynamo**.
 
-Designed as a systems engineering portfolio project for top-tier software engineering roles (Amazon SDE), it demonstrates concrete mastery of:
+Engineered for high-throughput, low-latency concurrent workloads, DistKV incorporates:
 - **Data Structures**: Hand-written $O(1)$ LRU cache (HashMap + custom doubly-linked list with sentinels) and min-heap priority queues.
 - **Concurrency & OS Fundamentals**: Thread pooling (`ThreadPoolExecutor`), lock striping (16 shards), non-blocking metrics (`LongAdder`), blocking socket I/O, and `fsync` storage durability.
 - **Distributed Systems**: Consistent hashing with virtual nodes ($\sim 100$ vnodes), replication factor 2 (RF=2), and 3-strike heartbeat failure detection.
@@ -156,7 +156,7 @@ Spins up:
 
 ---
 
-## 🌐 Web Dashboard (Phase 7)
+## 🌐 Web Dashboard
 
 DistKV includes an embedded single-page monitoring dashboard built into the Java server (`com.sun.net.httpserver`, zero npm, zero external dependencies). Static assets live in `src/main/resources/web/`.
 

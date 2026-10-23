@@ -37,7 +37,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 /**
- * Embedded HTTP server for the DistKV Phase 7 single-page visual dashboard.
+ * Embedded HTTP server for the DistKV single-page visual dashboard.
  *
  * <p>Endpoints:
  * <ul>
