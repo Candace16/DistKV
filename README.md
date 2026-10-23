@@ -168,16 +168,3 @@ In distributed systems, every architecture is defined by its trade-offs:
    - Because `LRUCache.get()` updates recency pointers, reads mutate state. `ReentrantReadWriteLock` cannot be used safely without lock-free skip-lists. We chose **16-shard lock striping**, which delivers over **1.77M ops/sec** with minimal architectural complexity.
 3. **Fsync Safety vs. Speed**:
    - `everysec` offers the optimal sweet spot: sequential I/O speed with an upper bound of 1 second of loss exposure on catastrophic host power failure.
-
----
-
-## 🎯 Systems Interview Defense Cheat Sheet
-
-### Q1: Why not use Java's standard `LinkedHashMap` for the LRU cache?
-> *"In a production database or internship portfolio, using `LinkedHashMap` conceals whether you understand memory pointer manipulation and amortized analysis. Hand-crafting `HashMap<K, Node<K,V>>` with head/tail sentinel nodes proves mastery of constant-time pointer splicing and boundary management."*
-
-### Q2: Why does an LRU cache suffer under standard `ReadWriteLock`?
-> *"Reads in an LRU cache are not pure reads; every access promotes the node to the head of the doubly-linked list. Under concurrent reader threads, list pointer modifications cause race conditions and memory corruption. Sharding the cache into 16 striped locks decouples key traffic, yielding zero lock contention for items in different shards."*
-
-### Q3: How does your consistent hashing handle node additions/removals?
-> *"With $N$ servers, modular hashing relocates almost $100\%$ of keys when $N$ changes. DistKV's 64-bit MD5 consistent hash ring guarantees that only $\approx 1/N$ of keys migrate to the newly added or remaining server. Virtual nodes ($\sim 100$ per node) eliminate ring variance and hot spots."*
